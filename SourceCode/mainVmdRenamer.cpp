@@ -21,7 +21,7 @@ int mainVmdRenamer(const char* vmdPath, const char* csvPath, int transformScale)
 
      // ログファイルを開けているか
     if(result) {
-      return result;
+       return result;
     }
 
     //VMDクラス初期化
@@ -31,7 +31,7 @@ int mainVmdRenamer(const char* vmdPath, const char* csvPath, int transformScale)
     result = vmd.InputBoneData(csvPath);
     //csvデータは正しいか？
     if(result) {
-      return result;
+        return result;
     }
 
     int boneNumber = vmd.boneList.frameBoneList.size();
@@ -45,7 +45,7 @@ int mainVmdRenamer(const char* vmdPath, const char* csvPath, int transformScale)
     result = vmd.ReadVMD(vmdPath);
     //vmdファイルは正しく開けているか判定
     if(result) {
-      return result;
+        return result;
     }
 
     //モーションデータ書き換え

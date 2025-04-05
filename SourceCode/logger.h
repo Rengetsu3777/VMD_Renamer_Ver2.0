@@ -15,106 +15,106 @@
 class Logger {
 
 public:
-  
-  //外部ファイル向け初期化処理
-  static void Init(std::string logPath) {
-    if (instance != nullptr) {
-      return;
+    
+    //外部ファイル向け初期化処理
+    static void Init(std::string logPath) {
+        if (instance != nullptr) {
+            return;
+        }
+        instance = new Logger();
+
+        instance->OpenLogFile(logPath);
     }
-    instance = new Logger();
-
-    instance->OpenLogFile(logPath);
-  }
 
 
-  // 外部ファイル向けデストラクタ処理
-  static void Uninit() {
-    if (instance) {
-      // インスタンス削除
-      delete instance;
+    // 外部ファイル向けデストラクタ処理
+    static void Uninit() {
+        if (instance) {
+            // インスタンス削除
+            delete instance;
 
-      instance = nullptr;
+            instance = nullptr;
+        }
     }
-  }
 
 
-  //シングルトンクラスオブジェクト（クラス内にインスタンスを持ち、外部ファイルでは常にこのクラスは1つしか存在できない。）
-  static Logger *GetInstance() { return instance; }
+    //シングルトンクラスオブジェクト（クラス内にインスタンスを持ち、外部ファイルでは常にこのクラスは1つしか存在できない。）
+    static Logger *GetInstance() { return instance; }
 
-  void LogInfo(const std::string& log);
-  void LogWarning(const std::string &log);
-  void LogError(const std::string& log);
+    void LogInfo(const std::string& log);
+    void LogWarning(const std::string &log);
+    void LogError(const std::string& log);
 
-  std::locale Locale;
+    std::locale Locale;
 
 public:
 
-  //書式指定機能追加
-  template<typename... Args>
-  static void Error(const std::string& log, Args&&...args)
-  {
-    //書式フォーマットを行って、シングルトンインスタンスのErrorログの呼び出し
-    instance->LogError(StringFormat(log, std::forward<Args>(args) ...));
-  }
+    //書式指定機能追加
+    template<typename... Args>
+    static void Error(const std::string& log, Args&&...args)
+    {
+        //書式フォーマットを行って、シングルトンインスタンスのErrorログの呼び出し
+        instance->LogError(StringFormat(log, std::forward<Args>(args) ...));
+    }
 
-  //書式指定機能追加
-  template<typename... Args>
-  static void Warning(const std::string& log, Args&&...args)
-  {
-    //書式フォーマットを行って、シングルトンインスタンスのErrorログの呼び出し
-    instance->LogWarning(StringFormat(log, std::forward<Args>(args) ...));
-  }
+    //書式指定機能追加
+    template<typename... Args>
+    static void Warning(const std::string& log, Args&&...args)
+    {
+        //書式フォーマットを行って、シングルトンインスタンスのErrorログの呼び出し
+        instance->LogWarning(StringFormat(log, std::forward<Args>(args) ...));
+    }
 
-  // 書式指定機能追加
-  template<typename... Args>
-  static void Info(const std::string& log, Args&&...args)
-  {
-    //書式フォーマットを行って、シングルトンインスタンスのErrorログの呼び出し
-    instance->LogInfo(StringFormat(log, std::forward<Args>(args) ...));
-  }
+    // 書式指定機能追加
+    template<typename... Args>
+    static void Info(const std::string& log, Args&&...args)
+    {
+        //書式フォーマットを行って、シングルトンインスタンスのErrorログの呼び出し
+        instance->LogInfo(StringFormat(log, std::forward<Args>(args) ...));
+    }
   
   
 private:
-  std::string GetTime();
+    std::string GetTime();
 
 private:
 
-  // コンストラクタ
-  Logger() {
+    // コンストラクタ
+    Logger() {
 
-  }
+    }
 
-  // デストラクタ
-  ~Logger() {
+    // デストラクタ
+    ~Logger() {
 
-  }
+    }
 
 public:
-  
-  void OpenLogFile(const std::string &filePath);
+    
+    void OpenLogFile(const std::string &filePath);
 
-  void CloseLogFile();
+    void CloseLogFile();
 
-  // ファイルオープンの確認
-  bool IsOpenedLogFile();
+    // ファイルオープンの確認
+    bool IsOpenedLogFile();
 
-  // ログファイルデータ書き込み
-  void WriteLogFile(const std::string &log);
+    // ログファイルデータ書き込み
+    void WriteLogFile(const std::string &log);
 
-  //日本語基準でのログ出力のためのロケール設定
-  void LogLocale(std::string language);
-      
-  //エラーフラグクラス変数の取得
-  int GetErrorFlag();
+    //日本語基準でのログ出力のためのロケール設定
+    void LogLocale(std::string language);
+        
+    //エラーフラグクラス変数の取得
+    int GetErrorFlag();
 
 private:
-  static Logger* instance;
-  
-  // ログ// ファイル出力先パス
-  const std::string LogFilePath;
+    static Logger* instance;
+    
+    // ログ// ファイル出力先パス
+    const std::string LogFilePath;
 
-  std::ofstream LogStream;
-  std::filebuf* FileBuf;
-  int error;
+    std::ofstream LogStream;
+    std::filebuf* FileBuf;
+    int error;
 };
 
