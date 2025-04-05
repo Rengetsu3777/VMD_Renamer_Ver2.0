@@ -23,6 +23,11 @@ csvファイルにボーンの対応表と倍率変換適用設定があり、�
 
 
 ## 使い方
+
+### デモ映像
+[![映像](README_IMAGE/image/thumbnail.png)](https://www.youtube.com/watch?v=gvQ9JQIEdCU)
+(Youtube)<br><br>
+
 ### 下準備
 まず、画像のフォルダー(VMD_Renamer)を開き、「SampleData」というフォルダーを開いてください。その中にある「**sample.csv**」csvファイルを編集していきます。  <br><br>
 
