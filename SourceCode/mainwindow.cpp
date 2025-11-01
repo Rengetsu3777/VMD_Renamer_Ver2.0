@@ -78,12 +78,12 @@ void MainWindow::on_runButton_released()
     std::string argString;
     char* log_path = (char*)"./log/.log";
     QString vmdPathStr = ui->fileNameLineEdit->text();
-
+    //char* vmdPath = vmdPathStr.toUtf8().data();
     std::string vmdPath = vmdPathStr.toStdString();
     cout << "vmdPath: " << vmdPath << endl;
 
     QString filePathStr = ui->fileNameLineEdit_2->text();
-
+    //char* filePath = filePathStr.toUtf8().data();
     std::string filePath = filePathStr.toStdString();
 
     int transformScale = ui->scaleBox->value();
@@ -114,6 +114,10 @@ void MainWindow::on_runButton_released()
         ui->resultLabel->setText("変換成功");
     }
 
+
+
+
+    //std::cout << mainVmdRenamer(vmdPath, filePath, transformScale) << std::endl;
 }
 
 void MainWindow::on_actionOpen_log_file_triggered()

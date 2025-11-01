@@ -107,6 +107,10 @@ public:
     //エラーフラグクラス変数の取得
     int GetErrorFlag();
 
+    std::string GetRunningDialog();
+
+    void SetRunningDialog(std::string runningDialog);
+
 private:
     static Logger* instance;
     
@@ -116,5 +120,6 @@ private:
     std::ofstream LogStream;
     std::filebuf* FileBuf;
     int error;
+    std::string runningLog;
 };
 

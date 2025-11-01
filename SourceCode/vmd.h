@@ -10,7 +10,7 @@ typedef unsigned long DWORD;
 typedef unsigned char BYTE;
 
 #define BONE_NAME_SIZE 15 //MMDではボーン名は15バイトまで
-#define PATH_OUTPUT "motionOutput/result.vmd"
+#define PATH_OUTPUT "MotionOutput/result.vmd"
 #define BONE_LIST_RESTRICTION_FIRST_COLUMN 1 //ボーン対応表の制約条件列の最初の列
 #define BONE_LIST_RESTRICTION_LAST_COLUMN 3 //ボーン対応表の制約条件列の最後の列
 #define NUM_DIFF_INTERNAL_AND_CSV_LINE_COUNT 2 // csvファイル内での行数カウントとgetlineで取得した行の内部での行数カ
@@ -92,6 +92,7 @@ public:
     VMDHeader header; // ヘッダー情報
     std::vector<VMDMotionFrame> motionFrames; // モーションのキーフレームのリスト
     std::vector<VMDMorphFrame> morphFrames; // 表情モーションのキーフレームのリスト
+    std::string convertDialogText; // 変換時の具体的なエラーや状態を表す文字列
 
     int ReadVMD(const char* filePath);
     void RenameAndRescaleBone(const int n);

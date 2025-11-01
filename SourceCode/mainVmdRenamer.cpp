@@ -11,16 +11,22 @@
 VMD vmd;
 Logger *Logger::instance = nullptr;
 
-int mainVmdRenamer(const char* vmdPath, const char* csvPath, int transformScale) {
+std::tuple<int, std::string> mainVmdRenamer(const char* vmdPath, const char* csvPath, int transformScale) {
 
     //ログ関連初期化
-    std::string logPath = getCodeFolderPath() + "/log/.log";
+    std::string logPath = getCodeFolderPath() + "/Log/.log";
     std::cout << "LogPath: " << logPath << std::endl;
     Logger::Init(logPath);
-    int result = Logger::GetInstance()->GetErrorFlag();
+    int resultFlag = Logger::GetInstance()->GetErrorFlag();
+    std::string resultDialog;
+
+    std::tuple<int, std::string> result; //変換結果を状態番号と状態説明のログをセットにしている。
+
 
      // ログファイルを開けているか
-    if(result) {
+    if(resultFlag) {
+        resultDialog = Logger::GetInstance()->GetRunningDialog();
+        result = std::make_tuple(resultFlag, resultDialog);
        return result;
     }
 
@@ -28,9 +34,11 @@ int mainVmdRenamer(const char* vmdPath, const char* csvPath, int transformScale)
     auto vmd = VMD();
 
     //csvファイル読み込み
-    result = vmd.InputBoneData(csvPath);
+    resultFlag = vmd.InputBoneData(csvPath);
     //csvデータは正しいか？
-    if(result) {
+    if(resultFlag) {
+        resultDialog = Logger::GetInstance()->GetRunningDialog();
+        result = std::make_tuple(resultFlag, resultDialog);
         return result;
     }
 
@@ -42,9 +50,11 @@ int mainVmdRenamer(const char* vmdPath, const char* csvPath, int transformScale)
     Logger::GetInstance()->Info("Bone Number in csv file: %d\n", boneNumber);
 
     //vmdファイル情報読み込み
-    result = vmd.ReadVMD(vmdPath);
+    resultFlag = vmd.ReadVMD(vmdPath);
     //vmdファイルは正しく開けているか判定
-    if(result) {
+    if(resultFlag) {
+        resultDialog = Logger::GetInstance()->GetRunningDialog();
+        result = std::make_tuple(resultFlag, resultDialog);
         return result;
     }
 
@@ -58,18 +68,10 @@ int mainVmdRenamer(const char* vmdPath, const char* csvPath, int transformScale)
     printf("Info: Successfully End the process\n");
     printf("Info: 正常に処理を完了しました。\n");
     Logger::GetInstance()->Info("Successfully End the process (正常に処理を完了しました。）\n");
+    Logger::GetInstance()->SetRunningDialog("正常に変換が完了しました");
 
-    return 0;
+    resultFlag = 0;
+    resultDialog = Logger::GetInstance()->GetRunningDialog();
+    result = std::make_tuple(resultFlag, resultDialog);
+    return result;
 }
-
-/*
-//デバッグ用メイン関数
-int main(int argc, char* argv[]) {
-  std::string filePath =
-"D:/ProjectFile/programing/C++/VMD_Renamer/20240915/boneName3_Miku330_v3.04.csv";
-  std::string vmdPath =
-"D:/ProjectFile/programing/C++/VMD_Renamer/20240915/motion.vmd"; int
-transformScale = 100; mainVmdRenamer(vmdPath.data(), filePath.data(),
-transformScale);
-}
-*/

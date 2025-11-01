@@ -13,7 +13,8 @@ bool Logger::IsOpenedLogFile() { return this->LogStream.is_open(); }
 
 void Logger::OpenLogFile(const std::string &filePath) {
     if (this->IsOpenedLogFile() == false) {
-        this->LogStream.open(filePath, std::ios::out);
+        //this->LogStream.open(filePath, std::ios::out);
+        this->LogStream.open(filePath, std::ofstream::out | std::ofstream::trunc);
         std::cout << "opening log file!: " << this->IsOpenedLogFile() << std::endl;
         this->error = 0;
     } else {
@@ -47,6 +48,16 @@ void Logger::LogLocale(std::string language) {
 //エラーフラグクラス変数の取得
 int Logger::GetErrorFlag() {
     return this->error;
+}
+
+//ダイアログに表示する実行結果の表示文字列
+std::string Logger::GetRunningDialog() {
+    return this->runningLog;
+}
+
+//ダイアログに表示する実行結果の表示文字列
+void Logger::SetRunningDialog(std::string runningDialog) {
+    this->runningLog = runningDialog;
 }
 
 

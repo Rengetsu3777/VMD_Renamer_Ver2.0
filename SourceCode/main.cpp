@@ -1,29 +1,40 @@
-#include <math.h>
-#include "vmd.h"
+/*
+#include "vmdrenamer.h"
 
+#include <QApplication>
+#include <QLocale>
+#include <QTranslator>
 
-VMD vmd;
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
 
-using namespace std;
+    QTranslator translator;
+    const QStringList uiLanguages = QLocale::system().uiLanguages();
+    for (const QString &locale : uiLanguages) {
+        const QString baseName = "VMDRenamer_" + QLocale(locale).name();
+        if (translator.load(":/i18n/" + baseName)) {
+            a.installTranslator(&translator);
+            break;
+        }
+    }
+    VMDRenamer w;
+    w.show();
+    return a.exec();
+}
+*/
 
-int main(int argc, char **argv) {
-  
-    const char* vmdPath = argv[1];
-    const char* csvPath = argv[2];
-    std::string transformScaleString = argv[3];
-    const int transformScale = stoi(transformScaleString);
-    BoneList boneList = inputBoneData(csvPath);
-    int boneNumber = boneList.frameBoneList.size();
-    printf("Info: Bone Number in csv file: %d\n", boneNumber);
-    printf("Info: csvファイル内の定義ボーン数: %d\n", boneNumber);
-    
+#include "vmdrenamer.h"
+#include "dialog.h"
 
-    vmd.ReadVMD(vmdPath);
+#include <QApplication>
 
-    VMD renamedVMD = vmd.RenameAndRescaleBone(vmd, boneList, transformScale);
-    saveVMD(PATH_OUTPUT, renamedVMD);
-    printf("Info: Successfully End the process\n");
-    printf("Info: 正常に処理を完了しました。\n");
-
-    return 0;
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    VMDRenamer w;
+    Dialog w2;
+    w.setDialogWindow(&w2);
+    w.show();
+    return a.exec();
 }

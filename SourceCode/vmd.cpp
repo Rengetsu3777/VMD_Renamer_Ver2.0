@@ -29,6 +29,8 @@ int VMD::ReadVMD(const char* filePath) {
     if (fp == NULL || !isMatchedExtension(filePath, "vmd")) {
         printf("Error: vmd File cannot be opened\n");
         printf("エラー: vmdファイルを開けません。\n");
+        convertDialogText = "変換失敗: vmdファイルを開けません。\n選択したvmdファイルが「.vmd」のファイル形式かご確認ください。\n";
+        Logger::GetInstance()->SetRunningDialog(convertDialogText);
         std::cout << filePath << std::endl;
         Logger::GetInstance()->Error("エラー: vmdファイルを開けません。");
         return 3;
@@ -115,7 +117,6 @@ void VMD::RenameAndRescaleBone(int transformScale) {
 
 
 // 変換したモーションデータで、VMDファイルを生成する
-// void saveVMD(const char *filePath, VMD vmd) {
 void VMD::SaveVMD(const char *filePath) {
 
     // VMDファイルをバイナリモードで開く
@@ -182,6 +183,9 @@ int VMD::InputBoneData(const char *filePath) {
         cout << "csvファイルを開けません。"
              << endl;
 
+        convertDialogText = "変換失敗: csvファイルを開けません。\n選択したcsvファイルのファイル形式が「.csv」で、かつExcelなどで正しく開けるファイルかをご確認ください。\n";
+        Logger::GetInstance()->SetRunningDialog(convertDialogText);
+
         Logger::GetInstance()->Error(" csvファイルを開けません。");
         return 1;
     }
@@ -215,7 +219,7 @@ int VMD::InputBoneData(const char *filePath) {
         // 5列目読み込み
         getline(ss, newBoneName, ',');  
 
-        if (!frameBoneName.empty()) {  
+        if (!frameBoneName.empty()) {
             // さっき読みこんだ1列目のデータを配列に入れる
             // 変換なしのpush_back（UTF-8の文字列）
             this->boneList.frameBoneList.push_back(frameBoneName);  
@@ -233,31 +237,58 @@ int VMD::InputBoneData(const char *filePath) {
                  << "行1列目)"
                  << endl;
 
+            convertDialogText = "変換失敗: 読み込まれたcsvファイルのデータに不備があります。\ncsvファイルの" + to_string(boneListLineNum + NUM_DIFF_INTERNAL_AND_CSV_LINE_COUNT) + "行1列目のデータが空白となっています。\n該当箇所の記入に問題がないかご確認ください。\n";
+            Logger::GetInstance()->SetRunningDialog(convertDialogText);
+
             Logger::GetInstance()->Error(" エラー：入力ボーン名が不正です！ ( %d行1列目)", boneListLineNum + NUM_DIFF_INTERNAL_AND_CSV_LINE_COUNT);
 
             return 2;
         }
 
-        if (!newBoneName.empty()) {  // さっき読みこんだfifth columnのデータを配列に入れる
-            // 変換なしのpush_back。UTF-8の文字列
-            boneList.newBoneList.push_back(newBoneName);  
-
-        } else {
-
+        if (newBoneName.empty()) {  // さっき読みこんだfifth columnのデータを配列に入れる
             //エラーログ
             cout << "Error: Invalid New Bone Name (column 5, line "
-                 << boneListLineNum + NUM_DIFF_INTERNAL_AND_CSV_LINE_COUNT 
+                 << boneListLineNum + NUM_DIFF_INTERNAL_AND_CSV_LINE_COUNT
                  << ")"
                  << endl;
 
             cout << "エラー：入力新ボーン名が不正です！ ( "
                  << boneListLineNum + NUM_DIFF_INTERNAL_AND_CSV_LINE_COUNT
-                 << "行5列目)" 
+                 << "行5列目)"
                  << endl;
 
+            convertDialogText = "変換失敗: 読み込まれたcsvファイルのデータに不備があります。\ncsvファイルの" + to_string(boneListLineNum + NUM_DIFF_INTERNAL_AND_CSV_LINE_COUNT) + "行5列目のデータが空白となっています。\n該当箇所の記入に問題がないかご確認ください。\n";
+            Logger::GetInstance()->SetRunningDialog(convertDialogText);
+
             Logger::GetInstance()->Error("エラー：入力新ボーン名が不正です！ ( %d行5列目)", boneListLineNum + NUM_DIFF_INTERNAL_AND_CSV_LINE_COUNT);
-            
+
             return 2;
+
+        } else if(newBoneName.length() >= BONE_NAME_SIZE) {
+            //新しいボーン名が15バイト以上になっている場合
+
+            //エラーログ
+            cout << "Error: Invalid New Bone Name (column 5, line "
+                 << boneListLineNum + NUM_DIFF_INTERNAL_AND_CSV_LINE_COUNT
+                 << ")"
+                 << endl;
+
+            cout << "エラー：入力新ボーン名が不正です！ ( "
+                 << boneListLineNum + NUM_DIFF_INTERNAL_AND_CSV_LINE_COUNT
+                 << "行5列目)"
+                 << endl;
+
+            convertDialogText = "変換失敗: 読み込まれたcsvファイルのデータに不備があります。\ncsvファイルの" + to_string(boneListLineNum + NUM_DIFF_INTERNAL_AND_CSV_LINE_COUNT) + "行5列目の入力が長すぎます（15バイト以上となっています。）\n該当箇所を修正してご確認ください。\n";
+            Logger::GetInstance()->SetRunningDialog(convertDialogText);
+
+
+            Logger::GetInstance()->Error("変換失敗: 読み込まれたcsvファイルのデータに不備があります。\ncsvファイルの" + to_string(boneListLineNum + NUM_DIFF_INTERNAL_AND_CSV_LINE_COUNT) + "行5列目の入力が長すぎます（15バイト以上となっています。）\n該当箇所を修正してご確認ください。\n");
+
+            return 2;
+
+        } else {
+            // 変換なしのpush_back。UTF-8の文字列
+            boneList.newBoneList.push_back(newBoneName);
         }
 
         boneListLineNum++;
